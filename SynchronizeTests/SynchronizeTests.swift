@@ -24,6 +24,12 @@ class SynchronizeTests: XCTestCase {
         }
     }
     
+    func test_sleep() {
+        measure {
+            XCTAssertTrue(synchronize.sleep())
+        }
+    }
+    
     func test_mainRunloop() {
         measure {
             XCTAssertTrue(synchronize.mainRunloop())
@@ -33,6 +39,12 @@ class SynchronizeTests: XCTestCase {
     func test_mainSemaphore() {
         measure {
             XCTAssertTrue(synchronize.mainSemaphore())
+        }
+    }
+    
+    func test_mainSleep() {
+        measure {
+            XCTAssertTrue(synchronize.mainSleep())
         }
     }
 }

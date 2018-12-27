@@ -41,6 +41,23 @@ final class Synchronize {
         return result
     }
     
+    func sleep() -> Bool {
+        let date = Date()
+        var result = false
+        var isFinished = false
+        
+        asyncFunction {
+            isFinished = true
+            result = true
+        }
+        
+        while !isFinished && date.timeIntervalSinceNow < 3 {
+            Thread.sleep(forTimeInterval: 0.01)
+        }
+        
+        return result
+    }
+    
     func mainRunloop() -> Bool {
         var result = false
         var isFinished = false
@@ -68,6 +85,23 @@ final class Synchronize {
         
         if semaphore.wait(timeout: DispatchTime.now() + 3) == .timedOut {
             return false
+        }
+        
+        return result
+    }
+    
+    func mainSleep() -> Bool {
+        let date = Date()
+        var result = false
+        var isFinished = false
+        
+        mainAsyncFunction {
+            isFinished = true
+            result = true
+        }
+        
+        while !isFinished && date.timeIntervalSinceNow < 3 {
+            Thread.sleep(forTimeInterval: 0.01)
         }
         
         return result
