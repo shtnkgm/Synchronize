@@ -9,16 +9,78 @@
 import Foundation
 
 final class Synchronize {
-    func runloop() {
+    func runloop() -> Bool {
+        var result = false
+        var isFinished = false
         
+        asyncFunction {
+            isFinished = true
+            result = true
+        }
+        
+        while !isFinished {
+           RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.01))
+        }
+        
+        return result
     }
     
-    func semaphore() {
+    func semaphore() -> Bool {
+        var result = false
+        let semaphore = DispatchSemaphore(value: 0)
         
+        asyncFunction {
+            semaphore.signal()
+            result = true
+        }
+        
+        if semaphore.wait(timeout: DispatchTime.now() + 3) == .timedOut {
+            return false
+        }
+        
+        return result
+    }
+    
+    func mainRunloop() -> Bool {
+        var result = false
+        var isFinished = false
+        
+        mainAsyncFunction {
+            isFinished = true
+            result = true
+        }
+        
+        while !isFinished {
+            RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.01))
+        }
+        
+        return result
+    }
+    
+    func mainSemaphore() -> Bool {
+        var result = false
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        mainAsyncFunction {
+            semaphore.signal()
+            result = true
+        }
+        
+        if semaphore.wait(timeout: DispatchTime.now() + 3) == .timedOut {
+            return false
+        }
+        
+        return result
     }
     
     func asyncFunction(completion: @escaping () -> Void) {
         DispatchQueue.global().async {
+            completion()
+        }
+    }
+    
+    func mainAsyncFunction(completion: @escaping () -> Void) {
+        DispatchQueue.main.async {
             completion()
         }
     }
