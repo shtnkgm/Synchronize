@@ -13,18 +13,26 @@ class SynchronizeTests: XCTestCase {
     let synchronize = Synchronize()
     
     func test_runloop() {
-        XCTAssertTrue(synchronize.runloop())
+        measure {
+            XCTAssertTrue(synchronize.runloop())
+        }
     }
     
     func test_semaphore() {
-        XCTAssertTrue(synchronize.semaphore())
+        measure {
+            XCTAssertTrue(synchronize.semaphore())
+        }
     }
     
     func test_mainRunloop() {
-        XCTAssertTrue(synchronize.mainRunloop())
+        measure {
+            XCTAssertTrue(synchronize.mainRunloop())
+        }
     }
     
     func test_mainSemaphore() {
-        XCTAssertTrue(synchronize.mainSemaphore())
+        measure {
+            XCTAssertTrue(synchronize.mainSemaphore())
+        }
     }
 }
