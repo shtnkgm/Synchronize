@@ -9,11 +9,11 @@
 import Foundation
 
 final class Synchronize {
-    func runloop() -> Bool {
+    func runloop(isMainThread: Bool) -> Bool {
         var result = false
         var isFinished = false
         
-        asyncFunction {
+        asyncFunction(isMainThread: isMainThread) {
             isFinished = true
             result = true
         }
@@ -25,11 +25,11 @@ final class Synchronize {
         return result
     }
     
-    func semaphore() -> Bool {
+    func semaphore(isMainThread: Bool) -> Bool {
         var result = false
         let semaphore = DispatchSemaphore(value: 0)
         
-        asyncFunction {
+        asyncFunction(isMainThread: isMainThread) {
             semaphore.signal()
             result = true
         }
@@ -41,12 +41,12 @@ final class Synchronize {
         return result
     }
     
-    func sleep() -> Bool {
+    func sleep(isMainThread: Bool) -> Bool {
         let date = Date()
         var result = false
         var isFinished = false
         
-        asyncFunction {
+        asyncFunction(isMainThread: isMainThread) {
             isFinished = true
             result = true
         }
@@ -58,63 +58,9 @@ final class Synchronize {
         return result
     }
     
-    func mainRunloop() -> Bool {
-        var result = false
-        var isFinished = false
-        
-        mainAsyncFunction {
-            isFinished = true
-            result = true
-        }
-        
-        while !isFinished {
-            RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.01))
-        }
-        
-        return result
-    }
-    
-    func mainSemaphore() -> Bool {
-        var result = false
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        mainAsyncFunction {
-            semaphore.signal()
-            result = true
-        }
-        
-        if semaphore.wait(timeout: DispatchTime.now() + 3) == .timedOut {
-            return false
-        }
-        
-        return result
-    }
-    
-    func mainSleep() -> Bool {
-        let date = Date()
-        var result = false
-        var isFinished = false
-        
-        mainAsyncFunction {
-            isFinished = true
-            result = true
-        }
-        
-        while !isFinished && date.timeIntervalSinceNow < 3 {
-            Thread.sleep(forTimeInterval: 0.01)
-        }
-        
-        return result
-    }
-    
-    func asyncFunction(completion: @escaping () -> Void) {
-        DispatchQueue.global().async {
-            completion()
-        }
-    }
-    
-    func mainAsyncFunction(completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
+    func asyncFunction(isMainThread: Bool, completion: @escaping () -> Void) {
+        let queue: DispatchQueue = isMainThread ? .main : .global()
+        queue.async {
             completion()
         }
     }

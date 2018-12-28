@@ -12,39 +12,39 @@ import XCTest
 class SynchronizeTests: XCTestCase {
     let synchronize = Synchronize()
     
-    func test_runloop() {
+    func test_runloop_subThread() {
         measure {
-            XCTAssertTrue(synchronize.runloop())
+            XCTAssertTrue(synchronize.runloop(isMainThread: false))
         }
     }
     
-    func test_semaphore() {
+    func test_semaphore_subThread() {
         measure {
-            XCTAssertTrue(synchronize.semaphore())
+            XCTAssertTrue(synchronize.semaphore(isMainThread: false))
         }
     }
     
-    func test_sleep() {
+    func test_sleep_subThread() {
         measure {
-            XCTAssertTrue(synchronize.sleep())
+            XCTAssertTrue(synchronize.sleep(isMainThread: false))
         }
     }
     
-    func test_mainRunloop() {
+    func test_runloop_mainThread() {
         measure {
-            XCTAssertTrue(synchronize.mainRunloop())
+            XCTAssertTrue(synchronize.runloop(isMainThread: true))
         }
     }
-    
-    func test_mainSemaphore() {
-        measure {
-            XCTAssertTrue(synchronize.mainSemaphore())
-        }
-    }
-    
-    func test_mainSleep() {
-        measure {
-            XCTAssertTrue(synchronize.mainSleep())
-        }
-    }
+
+//    func test_semaphore_mainThread() {
+//        measure {
+//            XCTAssertTrue(synchronize.semaphore(isMainThread: true))
+//        }
+//    }
+//
+//    func test_sleep_mainThread() {
+//        measure {
+//            XCTAssertTrue(synchronize.sleep(isMainThread: true))
+//        }
+//    }
 }
